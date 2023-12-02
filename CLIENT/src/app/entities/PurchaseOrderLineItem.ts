@@ -4,4 +4,5 @@ export interface PurchaseOrderLineItem {
   productid: string;
   qty: number;
   price: number;
+  productName?: string;
 }

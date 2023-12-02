@@ -26,26 +26,31 @@
     <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns" (click)="select(row)"></tr>
   </table>
-  <div class="padtop15">
-    <mat-icon (click)="newProduct()" matTooltip="Add New Expense" class="addicon" color="primary">
-      control_point
-    </mat-icon>
-  </div>
+  <mat-paginator style="margin-top: 2vh" [pageSize]="pageSize" *ngIf="hideEditForm" #paginator></mat-paginator>
 </div>
+
 <mat-card *ngIf="!hideEditForm">
   <mat-card-header>
+
     <mat-card-title>
       <span class="my-primary-text">{{ msg }}</span>
     </mat-card-title>
+
   </mat-card-header>
+
   <mat-card-content>
-    <app-product-details
-    [selectedProduct]="product"
-    (cancelled)="cancel('cancelled')"
-    (saved)="save($event)"
-    (deleted)="delete($event)"
-    >
+    <app-product-details [selectedProduct]="product" (cancelled)="cancel('cancelled')" (saved)="save($event)"
+      (deleted)="delete($event)">
     </app-product-details>
 
   </mat-card-content>
+
 </mat-card>
+<br>
+
+<div *ngIf="hideEditForm">
+  <mat-icon (click)="newProduct()" matTooltip="Add New Expense" class="addicon" color="primary"
+    style="width:50%; position: fixed; bottom: 0px; right: 500px;">
+    control_point
+  </mat-icon>
+</div>

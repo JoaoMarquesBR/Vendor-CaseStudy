@@ -1,15 +1,17 @@
-import { Component , OnInit} from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Sort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Product } from 'src/app/entities/Product';
 import { HttpClient } from '@angular/common/http';
 import { newProductService } from '../../../services/newProductService';
+import { MatPaginator } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-product-home',
   templateUrl: './product-home.component.html',
-  styleUrls: ['./product-home.component.css']
+  styleUrls: ['./product-home.component.css'],
 })
+
 export class ProductHomeComponent{
   hideEditForm : boolean = true;
   msg : string = "loading"
@@ -17,6 +19,13 @@ export class ProductHomeComponent{
   displayedColumns: string[] = ['id','name','vendorid'];
   products: Product[] = [];
   product! : Product;
+
+  pageSize = 8;
+  @ViewChild(MatPaginator, { static: false }) set matPaginator(
+  paginator: MatPaginator
+  ) {
+  this.dataSource.paginator = paginator;
+  }
 
   constructor(private productService: newProductService){
 

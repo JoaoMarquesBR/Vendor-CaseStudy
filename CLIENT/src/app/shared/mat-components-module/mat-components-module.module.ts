@@ -18,12 +18,14 @@ import {MatSelectModule} from '@angular/material/select';
 import {MatExpansionModule} from '@angular/material/expansion';
 import { MatPseudoCheckboxModule } from '@angular/material/core';
 import {MatCheckboxModule} from '@angular/material/checkbox';
-import {MatDialogModule} from '@angular/material/dialog';
+import { MatDialogModule } from '@angular/material/dialog';
+import {MatPaginatorModule} from '@angular/material/paginator';
 
 const MaterialComponents = [MatButtonModule,
   MatCardModule,
   MatMenuModule,
   MatIconModule,
+  MatPaginatorModule,
   MatListModule,
   MatTableModule,
   MatExpansionModule,

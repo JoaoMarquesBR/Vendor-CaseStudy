@@ -1,6 +1,6 @@
 import { PurchaseOrder } from './../../entities/PurchaseOrder';
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { MatComponentsModuleModule } from '../../shared/mat-components-module/mat-components-module.module';
 import {
   FormBuilder,
@@ -50,6 +50,7 @@ export class ViewerComponent {
   registeredProducts: PurchaseOrderLineItem[] = [];
   qtySelected: number = 1;
   reportCreated: boolean = false;
+  dateCreated: string | null = null; // Initialize as null or some default value
 
   //lab17
   purchasesOrders: PurchaseOrder[] = []; // expenses that being displayed currently in app
@@ -70,7 +71,7 @@ export class ViewerComponent {
   taxTotal: number = 0;
   total: number;
   reportno: number = 0;
-  msgBottom: string="";
+  msgBottom: string = '';
   qty: number = 0;
 
   numberArray?: number[] = Array(this.qty)
@@ -306,29 +307,46 @@ export class ViewerComponent {
   }
 
   onProductResponse(purchaseId: PurchaseOrder): void {
-    // Perform actions with the selected reportId
-    console.log('Selected Report ID:', purchaseId);
-
-    console.log(this.purchasesOrders);
-
     this.selectedPurchase = this.purchasesOrders.find(
       (purch) => purch.id === purchaseId.id
     );
     this.hasSelectedPurchase = true;
-    console.log('selected report is ');
-    console.log(this.selectedPurchase);
 
-    if (this.selectedPurchase?.items?.length) {
-      // Use reduce to calculate the sum of all prices
-      this.subTotal = this.selectedPurchase.items
-        .map((item) => item?.price ?? 0) // Map prices, handling potential null/undefined values
-        .reduce((total, price) => total + price, 0); // Calculate the sum using reduce
+    console.log('x');
+
+    if (this.selectedPurchase?.podate) {
+      const datePipe = new DatePipe('en-US');
+      console.log(this.selectedPurchase);
+
+      this.dateCreated = datePipe.transform(
+        purchaseId.podate,
+        'dd/MM/yyyy, h:mm a'
+      );
+    } else {
+      this.dateCreated = null;
     }
 
-    this.msgBottom= "Details for PO "+ purchaseId.items.at(0)?.poid
-    // console.log(this.purchasesOrders)
+    if (this.selectedPurchase && this.selectedPurchase.items) {
+      console.log(this.selectedPurchase);
+      for (const item of this.selectedPurchase.items) {
+        let itemIdInVendorList = this.vendorProducts.findIndex(
+          (x) => x.id == item.productid
+        );
+        item.productName = this.vendorProducts.at(itemIdInVendorList)?.name;
+      }
 
-    // You can perform any further operations here using the reportId
-    // For example, call a function or update some data based on the selected reportId
+      if (this.selectedPurchase?.items?.length) {
+        this.subTotal = this.selectedPurchase.items
+          .map((item) => item?.price ?? 0)
+          .reduce((total, price) => total + price, 0);
+      }
+
+      this.msgBottom = 'Details for PO ' + purchaseId.items.at(0)?.poid;
+    }
   }
+
+  viewPdf(): void {
+    console.log(this.selectedPurchase);
+    window.open(`${PDFURL}${this.selectedPurchase?.id}`, '');
+  } // viewPdf
 }
