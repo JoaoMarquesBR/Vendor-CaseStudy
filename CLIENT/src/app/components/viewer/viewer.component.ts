@@ -22,10 +22,14 @@ import { MatCommonModule } from '@angular/material/core';
 @Component({
   selector: 'app-viewer',
   templateUrl: './viewer.component.html',
-  imports: [CommonModule, MatCommonModule, ReactiveFormsModule, MatComponentsModuleModule],
+  imports: [
+    CommonModule,
+    MatCommonModule,
+    ReactiveFormsModule,
+    MatComponentsModuleModule,
+  ],
   standalone: true,
-  styles: [
-  ]
+  styles: [],
 })
 export class ViewerComponent {
   generatorForm: FormGroup;
@@ -43,16 +47,15 @@ export class ViewerComponent {
   selectedProducts: Product[] = []; // expenses that being displayed currently in app
   selectedProduct: Product; // the current selected expense
   selectedVendor: Vendor; // the current selected employee
-  registeredProducts: PurchaseOrderLineItem[]= [];
-  qtySelected : number = 1;
+  registeredProducts: PurchaseOrderLineItem[] = [];
+  qtySelected: number = 1;
   reportCreated: boolean = false;
 
   //lab17
   purchasesOrders: PurchaseOrder[] = []; // expenses that being displayed currently in app
 
- selectedPurchase : PurchaseOrder | undefined
+  selectedPurchase: PurchaseOrder | undefined;
   hasSelectedPurchase: boolean = false;
-
 
   // misc
   pickedExpense: boolean;
@@ -67,17 +70,18 @@ export class ViewerComponent {
   taxTotal: number = 0;
   total: number;
   reportno: number = 0;
-
+  msgBottom: string="";
   qty: number = 0;
 
-  numberArray?: number[] = Array(this.qty).fill(0).map((x, i) => i + 1);
-
+  numberArray?: number[] = Array(this.qty)
+    .fill(0)
+    .map((x, i) => i + 1);
 
   constructor(
     private builder: FormBuilder,
     private vendorService: NewVendorService,
     private expenseService: newProductService,
-    private purchaseService : PurchaseService
+    private purchaseService: PurchaseService
   ) {
     this.pickedEmployee = false;
     this.pickedExpense = false;
@@ -90,7 +94,7 @@ export class ViewerComponent {
     this.generatorForm = this.builder.group({
       expenseid: this.expenseid,
       employeeid: this.employeeid,
-      qtyControl : this.qty
+      qtyControl: this.qty,
     });
     this.selectedProduct = {
       id: '',
@@ -117,6 +121,8 @@ export class ViewerComponent {
       address1: '',
     };
     this.hasExpenses = false;
+    this.subTotal = 0;
+    this.taxTotal = 0;
     this.total = 0.0;
   } // constructor
   ngOnInit(): void {
@@ -156,8 +162,13 @@ export class ViewerComponent {
       // observer object
       next: (expenses: Product[]) => {
         this.vendorProducts = expenses;
-        this.qty = this.vendorProducts[0].qoh
-        this.numberArray = [0, ...Array(this.qty - 1).fill(0).map((x, i) => i + 1)];
+        this.qty = this.vendorProducts[0].qoh;
+        this.numberArray = [
+          0,
+          ...Array(this.qty - 1)
+            .fill(0)
+            .map((x, i) => i + 1),
+        ];
       },
       error: (err: Error) =>
         (this.msg = `product fetch failed! - ${err.message}`),
@@ -192,7 +203,7 @@ export class ViewerComponent {
         this.generated = false;
         this.items = []; // array for the report
         this.selectedProducts = []; // array for the details in app html
-        this.loadVendorsPurchaseOrders(this.selectedVendor.id)
+        this.loadVendorsPurchaseOrders(this.selectedVendor.id);
       });
   } // onPickEmployee
   /**
@@ -201,22 +212,24 @@ export class ViewerComponent {
    */
 
   onPickProduct(event: any): void {
+    let index = this.vendorProducts.findIndex((x) => x.id == event.value.id);
 
-    let index = this.vendorProducts.findIndex(x=>x.id == event.value.id)
-
-    if(index != -1){
-      this.qty = this.vendorProducts[index].qoh
-      this.numberArray = [0, ...Array(this.qty - 1).fill(0).map((x, i) => i + 1)];
+    if (index != -1) {
+      this.qty = this.vendorProducts[index].qoh;
+      this.numberArray = [
+        0,
+        ...Array(this.qty - 1)
+          .fill(0)
+          .map((x, i) => i + 1),
+      ];
       this.pickedProduct = true;
     }
 
     const expenseSubscription = this.generatorForm
-    .get('expenseid')
-    ?.valueChanges.subscribe((val) => {
-      this.selectedProduct = val;
-    })
-
-
+      .get('expenseid')
+      ?.valueChanges.subscribe((val) => {
+        this.selectedProduct = val;
+      });
   }
 
   onPickExpense(): void {
@@ -231,19 +244,17 @@ export class ViewerComponent {
         if (
           this.items.find((item) => item.productid === this.selectedProduct?.id)
         )
-        this.total =0;
+          this.total = 0;
         this.selectedProducts.forEach((exp) => (this.total += exp.msrp));
       });
 
-
     this.formSubscription?.add(expenseSubscription); // add it as a child, so all can be destroyed together
-
   } // onPickExpense
   /**
    * createReport - create the client side report
    */
 
-  addProduct():void{
+  addProduct(): void {
     this.hasProducts = true;
 
     const item: Product = {
@@ -261,16 +272,15 @@ export class ViewerComponent {
       // expenseid: this.selectedExpense?.id,
     };
 
-
     const orderLine: PurchaseOrderLineItem = {
       id: this.selectedVendor.id,
       poid: 0,
       productid: item.id,
       qty: this.qtySelected,
-      price: this.selectedProduct.msrp* this.qtySelected,
+      price: this.selectedProduct.msrp * this.qtySelected,
     };
 
-    console.log(orderLine)
+    console.log(orderLine);
 
     this.items.push(orderLine);
     this.registeredProducts.push(orderLine);
@@ -278,16 +288,18 @@ export class ViewerComponent {
     this.total = 0;
     this.registeredProducts.forEach((exp) => (this.total += exp.price));
 
-    const selectedProductIndex = this.vendorProducts.findIndex(x => item.id === x.id);
+    const selectedProductIndex = this.vendorProducts.findIndex(
+      (x) => item.id === x.id
+    );
 
     if (selectedProductIndex !== -1) {
-        this.vendorProducts.splice(selectedProductIndex, 1);
+      this.vendorProducts.splice(selectedProductIndex, 1);
     }
 
     this.pickedProduct = false;
   }
 
-  viewPurchaseOrder():void{
+  viewPurchaseOrder(): void {
     window.open(`${PDFURL}${this.reportno}`, '');
   }
 
@@ -298,7 +310,7 @@ export class ViewerComponent {
       vendorid: this.selectedProduct.vendorid,
       amount: this.total,
       items: this.items,
-      podate: new Date()
+      podate: new Date(),
     };
 
     this.purchaseService.create(purchase).subscribe({
@@ -316,23 +328,22 @@ export class ViewerComponent {
         this.pickedEmployee = true;
         this.pickedExpense = false;
         this.generated = true;
-        this.total  = 0 ;
+        this.total = 0;
         this.qty = 0;
-        this.registeredProducts=[];
+        this.registeredProducts = [];
         this.selectedProducts = [];
-        this.hasProducts=false;
+        this.hasProducts = false;
       },
     });
 
-    this.reportCreated=true;
-
+    this.reportCreated = true;
   } // createReport
 
   loadVendorsPurchaseOrders(id: number): void {
     this.purchasesOrders = [];
     this.purchaseService.getById(id).subscribe(
       (purchase: PurchaseOrder) => {
-        console.log("response was ")
+        console.log('response was ');
         this.purchasesOrders.push(purchase);
         this.purchasesOrders = this.purchasesOrders.flat(Infinity);
       },
@@ -341,25 +352,32 @@ export class ViewerComponent {
         console.error('Error fetching report:', error);
       }
     );
-
   }
-
 
   onProductResponse(purchaseId: PurchaseOrder): void {
     // Perform actions with the selected reportId
     console.log('Selected Report ID:', purchaseId);
 
-    console.log(this.purchasesOrders)
+    console.log(this.purchasesOrders);
 
-    this.selectedPurchase = this.purchasesOrders.find(purch => purch.id === purchaseId.id);
+    this.selectedPurchase = this.purchasesOrders.find(
+      (purch) => purch.id === purchaseId.id
+    );
     this.hasSelectedPurchase = true;
-    console.log("selected report is ")
-    console.log(this.selectedPurchase)
+    console.log('selected report is ');
+    console.log(this.selectedPurchase);
 
+    if (this.selectedPurchase?.items?.length) {
+      // Use reduce to calculate the sum of all prices
+      this.subTotal = this.selectedPurchase.items
+        .map((item) => item?.price ?? 0) // Map prices, handling potential null/undefined values
+        .reduce((total, price) => total + price, 0); // Calculate the sum using reduce
+    }
+
+    this.msgBottom= "Details for PO "+ purchaseId.items.at(0)?.poid
     // console.log(this.purchasesOrders)
 
     // You can perform any further operations here using the reportId
     // For example, call a function or update some data based on the selected reportId
   }
-
 }

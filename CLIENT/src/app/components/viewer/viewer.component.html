@@ -112,17 +112,23 @@
           </tr>
 
           <tr>
-
-
-            <td colspan="2" style="text-align: right">Total:</td>
+            <td colspan="2" style="text-align: right">Sub:</td>
             <td class="my-accent-text" style="font-weight: 600; text-align: right">
-              {{ total | currency : "USD" : "symbol" : "1.2-2" }}
+              {{ subTotal | currency : "USD" : "symbol" : "1.2-2" }}
             </td>
+          </tr>
 
+          <tr>
+            <td colspan="2" style="text-align: right">Tax:</td>
+            <td class="my-accent-text" style="font-weight: 600; text-align: right">
+              {{ (subTotal *1.13 ) - subTotal| currency : "USD" : "symbol" : "1.2-2" }}
+            </td>
+          </tr>
 
+          <tr>
             <td colspan="2" style="text-align: right">Total:</td>
             <td class="my-accent-text" style="font-weight: 600; text-align: right">
-              {{ total | currency : "USD" : "symbol" : "1.2-2" }}
+              {{ subTotal * 1.13 | currency : "USD" : "symbol" : "1.2-2" }}
             </td>
           </tr>
 
@@ -205,17 +211,12 @@
           </tr>
         </table>
       </div>
-      <div style="text-align: center" *ngIf="hasProducts">
-        <button mat-raised-button color="primary" (click)="createReport()" style="margin-top: 3vh">
-          Save Report
-        </button>
+      <div style="text-align: center">
+        <mat-card-title>
+          <span class="my-primary-text">{{ msgBottom }}</span>
+        </mat-card-title>
       </div>
 
-      <div style="text-align: center" *ngIf="reportCreated">
-        <button mat-raised-button color="primary" (click)="viewPurchaseOrder()" style="margin-top: 3vh">
-          View Purchase Order
-        </button>
-      </div>
     </form>
   </mat-card-content>
 </mat-card>
