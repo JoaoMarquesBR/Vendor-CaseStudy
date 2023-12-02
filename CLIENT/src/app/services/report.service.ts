@@ -6,10 +6,10 @@ import { PurchaseOrder } from '../entities/PurchaseOrder';
 @Injectable({
   providedIn: 'root'
 })
-export class PurchaseService extends GenericHttpService<PurchaseOrder> {
+export class ReportService extends GenericHttpService<PurchaseOrder> {
   constructor(httpClient : HttpClient) {
     // super(httpClient,"purchases")
-    super(httpClient,"purchases")
+    super(httpClient,"reports")
 
   }
 }

@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, ViewChild } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 
@@ -11,7 +11,7 @@ import { VendorsHomeComponent } from './components/vendors/vendors-home/vendors-
 import { VendorsModule } from './components/vendors/vendors.module';
 import { ProductModule } from './components/product/product.module';
 import { GeneratorComponent } from './components/generator/generator.component';
-
+import { ViewerComponent } from './components/viewer/viewer.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -26,6 +26,7 @@ import { GeneratorComponent } from './components/generator/generator.component';
     BrowserAnimationsModule,
     VendorsModule,
     ProductModule,
+    ViewerComponent,
     GeneratorComponent
   ],
   providers: [],

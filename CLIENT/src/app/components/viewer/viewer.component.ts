@@ -1,3 +1,4 @@
+import { PurchaseOrder } from './../../entities/PurchaseOrder';
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatComponentsModuleModule } from '../../shared/mat-components-module/mat-components-module.module';
@@ -13,24 +14,24 @@ import { newProductService } from 'src/app/services/newProductService';
 import { PurchaseService } from 'src/app/services/purchase.service';
 import { Product } from 'src/app/entities/Product';
 import { Vendor } from 'src/app/entities/Vendor';
-import { PurchaseOrder } from 'src/app/entities/PurchaseOrder';
 import { PurchaseOrderLineItem } from 'src/app/entities/PurchaseOrderLineItem';
 import { ViewportRuler } from '@angular/cdk/scrolling';
 import { PDFURL } from 'src/app/enviroment';
-import { ReportService } from 'src/app/services/report.service';
+import { MatCommonModule } from '@angular/material/core';
 
 @Component({
-  selector: 'app-generator',
+  selector: 'app-viewer',
+  templateUrl: './viewer.component.html',
+  imports: [CommonModule, MatCommonModule, ReactiveFormsModule, MatComponentsModuleModule],
   standalone: true,
-  imports: [CommonModule, MatComponentsModuleModule, ReactiveFormsModule],
-  templateUrl: './generator.component.html',
-  styleUrls: ['./generator.component.css'],
+  styles: [
+  ]
 })
-export class GeneratorComponent {
-  // form
+export class ViewerComponent {
   generatorForm: FormGroup;
   employeeid: FormControl;
   expenseid: FormControl;
+  purchaseOrderid: FormControl;
   qtyControl: FormControl;
 
   // data
@@ -44,7 +45,14 @@ export class GeneratorComponent {
   selectedVendor: Vendor; // the current selected employee
   registeredProducts: PurchaseOrderLineItem[]= [];
   qtySelected : number = 1;
-  reportCreated : boolean =false;
+  reportCreated: boolean = false;
+
+  //lab17
+  purchasesOrders: PurchaseOrder[] = []; // expenses that being displayed currently in app
+
+ selectedPurchase : PurchaseOrder | undefined
+  hasSelectedPurchase: boolean = false;
+
 
   // misc
   pickedExpense: boolean;
@@ -55,6 +63,8 @@ export class GeneratorComponent {
   hasProducts: boolean = false;
 
   msg: string;
+  subTotal: number = 0;
+  taxTotal: number = 0;
   total: number;
   reportno: number = 0;
 
@@ -67,7 +77,7 @@ export class GeneratorComponent {
     private builder: FormBuilder,
     private vendorService: NewVendorService,
     private expenseService: newProductService,
-    private reportService: ReportService
+    private purchaseService : PurchaseService
   ) {
     this.pickedEmployee = false;
     this.pickedExpense = false;
@@ -75,6 +85,7 @@ export class GeneratorComponent {
     this.msg = '';
     this.employeeid = new FormControl('');
     this.expenseid = new FormControl('');
+    this.purchaseOrderid = new FormControl('');
     this.qtyControl = new FormControl(0);
     this.generatorForm = this.builder.group({
       expenseid: this.expenseid,
@@ -176,11 +187,12 @@ export class GeneratorComponent {
         this.loadEmployeeExpenses();
         this.pickedExpense = false;
         this.hasExpenses = false;
-        this.msg = 'choose expense for employee';
+        this.msg = 'choose report for vendor';
         this.pickedEmployee = true;
         this.generated = false;
         this.items = []; // array for the report
         this.selectedProducts = []; // array for the details in app html
+        this.loadVendorsPurchaseOrders(this.selectedVendor.id)
       });
   } // onPickEmployee
   /**
@@ -282,14 +294,14 @@ export class GeneratorComponent {
   createReport(): void {
     this.generated = false;
     const purchase: PurchaseOrder = {
-      id: 0,
+      id: this.selectedVendor.id,
       vendorid: this.selectedProduct.vendorid,
       amount: this.total,
       items: this.items,
-      podate : new Date()
+      podate: new Date()
     };
 
-    this.reportService.create(purchase).subscribe({
+    this.purchaseService.create(purchase).subscribe({
       // observer object
       next: (purchase: PurchaseOrder) => {
         // server should be returning report with new id
@@ -297,7 +309,6 @@ export class GeneratorComponent {
           ? (this.msg = `Purchase ${purchase.id} added!`)
           : (this.msg = 'Purchase not added! - server error');
         this.reportno = purchase.id;
-        console.log(purchase)
       },
       error: (err: Error) => (this.msg = `Report not added! - ${err.message}`),
       complete: () => {
@@ -316,4 +327,39 @@ export class GeneratorComponent {
     this.reportCreated=true;
 
   } // createReport
+
+  loadVendorsPurchaseOrders(id: number): void {
+    this.purchasesOrders = [];
+    this.purchaseService.getById(id).subscribe(
+      (purchase: PurchaseOrder) => {
+        console.log("response was ")
+        this.purchasesOrders.push(purchase);
+        this.purchasesOrders = this.purchasesOrders.flat(Infinity);
+      },
+      (error: any) => {
+        // Handle error if needed
+        console.error('Error fetching report:', error);
+      }
+    );
+
+  }
+
+
+  onProductResponse(purchaseId: PurchaseOrder): void {
+    // Perform actions with the selected reportId
+    console.log('Selected Report ID:', purchaseId);
+
+    console.log(this.purchasesOrders)
+
+    this.selectedPurchase = this.purchasesOrders.find(purch => purch.id === purchaseId.id);
+    this.hasSelectedPurchase = true;
+    console.log("selected report is ")
+    console.log(this.selectedPurchase)
+
+    // console.log(this.purchasesOrders)
+
+    // You can perform any further operations here using the reportId
+    // For example, call a function or update some data based on the selected reportId
+  }
+
 }
