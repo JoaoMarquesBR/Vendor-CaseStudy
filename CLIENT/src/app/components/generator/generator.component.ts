@@ -285,8 +285,7 @@ export class GeneratorComponent {
       id: 0,
       vendorid: this.selectedProduct.vendorid,
       amount: this.total,
-      items: this.items,
-      podate : new Date()
+      items: this.items
     };
 
     this.reportService.create(purchase).subscribe({

@@ -6,6 +6,6 @@ export interface PurchaseOrder {
   vendorid: number;
   amount: number;
   items: PurchaseOrderLineItem[];
-  podate: Date;
+  podate?: Date ;
 
 }
