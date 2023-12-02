@@ -254,55 +254,6 @@ export class ViewerComponent {
    * createReport - create the client side report
    */
 
-  addProduct(): void {
-    this.hasProducts = true;
-
-    const item: Product = {
-      id: this.selectedProduct.id,
-      vendorid: 0,
-      name: '',
-      costprice: 0,
-      msrp: 0,
-      rop: 0,
-      eoq: 0,
-      qoh: 0,
-      qoo: 0,
-      qrcode: '',
-      qrcodetxt: '',
-      // expenseid: this.selectedExpense?.id,
-    };
-
-    const orderLine: PurchaseOrderLineItem = {
-      id: this.selectedVendor.id,
-      poid: 0,
-      productid: item.id,
-      qty: this.qtySelected,
-      price: this.selectedProduct.msrp * this.qtySelected,
-    };
-
-    console.log(orderLine);
-
-    this.items.push(orderLine);
-    this.registeredProducts.push(orderLine);
-
-    this.total = 0;
-    this.registeredProducts.forEach((exp) => (this.total += exp.price));
-
-    const selectedProductIndex = this.vendorProducts.findIndex(
-      (x) => item.id === x.id
-    );
-
-    if (selectedProductIndex !== -1) {
-      this.vendorProducts.splice(selectedProductIndex, 1);
-    }
-
-    this.pickedProduct = false;
-  }
-
-  viewPurchaseOrder(): void {
-    window.open(`${PDFURL}${this.reportno}`, '');
-  }
-
   createReport(): void {
     this.generated = false;
     const purchase: PurchaseOrder = {
