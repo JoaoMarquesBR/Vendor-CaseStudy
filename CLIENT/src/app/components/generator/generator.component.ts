@@ -202,6 +202,7 @@ export class GeneratorComponent {
     .get('expenseid')
     ?.valueChanges.subscribe((val) => {
       this.selectedProduct = val;
+      console.log(val)
     })
 
 

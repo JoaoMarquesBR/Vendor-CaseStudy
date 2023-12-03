@@ -116,7 +116,7 @@ export class ProductDetailsComponent implements OnInit {
         productId: this.selectedProduct.id,
         vendor: this.vendorSelected?.id,
         productName: this.selectedProduct.name,
-        retailPrice: this.selectedProduct.rop,
+        retailPrice: this.selectedProduct.msrp,
         costPrice: this.selectedProduct.costprice,
         eoq: this.selectedProduct.eoq,
         qoo: this.selectedProduct.qoo,
@@ -142,14 +142,14 @@ export class ProductDetailsComponent implements OnInit {
       this.selectedProduct.vendorid = this.vendorSelected?.id;
     }
     this.selectedProduct.name = this.productForm.value.productName;
-    this.selectedProduct.rop = this.productForm.value.retailPrice;
     this.selectedProduct.costprice = this.productForm.value.costPrice;
+    this.selectedProduct.msrp = this.productForm.value.retailPrice;
 
     this.selectedProduct.eoq = this.productForm.value.eoq;
     this.selectedProduct.qoo  = this.productForm.value.qoo;
     this.selectedProduct.qoh = this.productForm.value.qoh;
     this.selectedProduct.rop = this.productForm.value.rop;
-
+    this.selectedProduct.qrcodetxt = this.productForm.value.qrcodetextForm;
 
     this.saved.emit(this.selectedProduct);
   }

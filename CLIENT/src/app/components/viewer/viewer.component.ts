@@ -173,7 +173,9 @@ export class ViewerComponent {
       },
       error: (err: Error) =>
         (this.msg = `product fetch failed! - ${err.message}`),
-      complete: () => {},
+      complete: () => {
+        // console.log(this.vendorProducts)
+      },
     });
   } // loadEmployeeExpenses
   /**
@@ -181,6 +183,8 @@ export class ViewerComponent {
    * then load specific employee expenses for subsequent selection
    */
   onPickEmployee(): void {
+        console.log("y")
+
     this.formSubscription = this.generatorForm
       .get('employeeid')
       ?.valueChanges.subscribe((val) => {
