@@ -1,5 +1,4 @@
-
-<div class = "top-image">
+<div class="top-image">
   <img src="assets/images/company-logo.png">
 </div>
 
@@ -119,7 +118,7 @@
       <div layout="row">
         <mat-form-field>
           <mat-label>QRCode Text</mat-label>
-          <input matInput formControlName="qrcodetxt" required>
+          <input matInput formControlName="qrcodetextForm" required>
           <!-- <mat-error *ngIf="productForm.get('qrcodetxt').invalid && productForm.get('qrcodetxt').touched">
             QRCode Text is required.
           </mat-error> -->
@@ -128,9 +127,9 @@
 
 
       <div layout="row">
-          <mat-label>QRCode Source</mat-label>
-          <img src="">
-          <!-- <input matInput type="text"  required formControlName="rop" autofocus /> -->
+        <mat-label>QRCode Source</mat-label>
+        <img style="display:block;" [src]="'data:image/png;base64,' + selectedProduct.qrcode" />
+        <!-- <input matInput type="text"  required formControlName="rop" autofocus /> -->
       </div>
 
 

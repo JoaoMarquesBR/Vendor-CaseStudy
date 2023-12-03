@@ -33,7 +33,9 @@ export class ProductDetailsComponent implements OnInit {
   rop : FormControl;
   eoq : FormControl;
   qoo: FormControl;
-  qoh : FormControl;
+  qoh: FormControl;
+  qrcodetextForm : FormControl;
+
 
   //vendors part
   vendors: Vendor[] = [];
@@ -69,11 +71,14 @@ export class ProductDetailsComponent implements OnInit {
     this.vendor = new FormControl('',Validators.compose([Validators.required]));
     this.retailPrice = new FormControl('', Validators.pattern(/^\d+(\.\d{1,2})?$/));
     this.costPrice = new FormControl('', Validators.pattern(/^\d+(\.\d{1,2})?$/));
-    this.productName = new FormControl('',Validators.required);
+    this.productName = new FormControl('', Validators.required);
+    this.qrcodetextForm = new FormControl('');
+
     this.rop = new FormControl('',[Validators.required, Validators.pattern(/^\d+$/)]);
     this.eoq = new FormControl('',[Validators.required, Validators.pattern(/^\d+$/)]);
     this.qoo = new FormControl('',[Validators.required, Validators.pattern(/^\d+$/)]);
-    this.qoh = new FormControl('',[Validators.required, Validators.pattern(/^\d+$/)]);
+    this.qoh = new FormControl('', [Validators.required, Validators.pattern(/^\d+$/)]);
+
 
     this.productForm = new FormGroup({
       productId: this.productId,
@@ -84,8 +89,10 @@ export class ProductDetailsComponent implements OnInit {
       eoq: this.eoq,
       rop : this.rop,
       qoh : this.qoh,
-      qoo : this.qoo
+      qoo: this.qoo,
+      qrcodetextForm: this.qrcodetextForm
     });
+
   }
 
   ngOnInit(): void {
@@ -115,7 +122,9 @@ export class ProductDetailsComponent implements OnInit {
         qoo: this.selectedProduct.qoo,
         qoh: this.selectedProduct.qoh,
         rop: this.selectedProduct.rop,
+        qrcodetextForm : this.selectedProduct.qrcodetxt
       });
+
     });
   }
 
