@@ -228,9 +228,10 @@ public abstract class ReportPDFGenerator extends AbstractPdfView {
             BigDecimal tot = new BigDecimal(0.0);
             for (PurchaseOrderLineitem line : report.getItems()) {
                 Optional<Product> optx = expenseRepository.findById(line.getProductid()); //should be PRODUCT ID?
+
                 if (optx.isPresent()) {
                     Product expense = optx.get();
-                    tot = tot.add(expense.getMsrp(), new MathContext(8, RoundingMode.UP));
+                    tot = tot.add(expense.getMsrp().multiply(BigDecimal.valueOf(line.getQty())), new MathContext(8, RoundingMode.UP));
 
                     //product code
                     cell = new Cell().add(new Paragraph(String.valueOf(expense.getId()))
@@ -260,20 +261,17 @@ public abstract class ReportPDFGenerator extends AbstractPdfView {
                             .setTextAlignment(TextAlignment.CENTER));
                     table.addCell(cell);
 
-//                     BigDecimal taxValue = tot.multiply(new BigDecimal(0.13)).add(tot);
-
-// //                    BigDecimal totalValue = line.getPrice().multiply(BigDecimal.valueOf(line.getQty()));
-//                     BigDecimal totalValue = line.getPrice();
-//                     tot = tot.add(totalValue);
-//                     totalValue = totalValue.setScale(2,BigDecimal.ROUND_UP);
+ //                    BigDecimal totalValue = line.getPrice().multiply(BigDecimal.valueOf(line.getQty()));
+                     BigDecimal totalValue = line.getPrice();
+                     totalValue = totalValue.setScale(2,BigDecimal.ROUND_UP);
 
 
-//                     //ext price
-//                     cell = new Cell().add(new Paragraph("$"+(totalValue.toString()))
-//                             .setFont(font)
-//                             .setFontSize(12)
-//                             .setTextAlignment(TextAlignment.CENTER));
-//                     table.addCell(cell);
+                     //ext price
+                     cell = new Cell().add(new Paragraph("$"+(totalValue.toString()))
+                             .setFont(font)
+                             .setFontSize(12)
+                             .setTextAlignment(TextAlignment.CENTER));
+                     table.addCell(cell);
 
                 }
 
