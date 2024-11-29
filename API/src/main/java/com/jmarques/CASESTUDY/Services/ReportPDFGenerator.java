@@ -101,10 +101,10 @@ public abstract class ReportPDFGenerator extends AbstractPdfView {
             vendorTable.addCell(vendorCell);
 
             vendorCell = new Cell().add(new Paragraph(vendor.get().getName())
-                            .setFont(font)
-                            .setFontSize(12)
-                             .setBorder(Border.NO_BORDER)
-                            .setBold()
+                    .setFont(font)
+                    .setFontSize(12)
+                    .setBorder(Border.NO_BORDER)
+                    .setBold()
                     .setTextAlignment(TextAlignment.CENTER)
                     .setBackgroundColor(ColorConstants.LIGHT_GRAY));
 
@@ -117,10 +117,10 @@ public abstract class ReportPDFGenerator extends AbstractPdfView {
 
 
             vendorCell = new Cell().add(new Paragraph(vendor.get().getAddress1())
-                            .setFont(font)
-                            .setFontSize(12)
-                            .setBorder(Border.NO_BORDER)
-                            .setBold()
+                    .setFont(font)
+                    .setFontSize(12)
+                    .setBorder(Border.NO_BORDER)
+                    .setBold()
                     .setTextAlignment(TextAlignment.CENTER)
                     .setBackgroundColor(ColorConstants.LIGHT_GRAY));
 
@@ -133,10 +133,10 @@ public abstract class ReportPDFGenerator extends AbstractPdfView {
 
 
             vendorCell = new Cell().add(new Paragraph(vendor.get().getCity())
-                            .setFont(font)
-                            .setBorder(Border.NO_BORDER)
-                            .setFontSize(12)
-                            .setBold()
+                    .setFont(font)
+                    .setBorder(Border.NO_BORDER)
+                    .setFontSize(12)
+                    .setBold()
                     .setTextAlignment(TextAlignment.CENTER)
                     .setBackgroundColor(ColorConstants.LIGHT_GRAY));
 
@@ -149,10 +149,10 @@ public abstract class ReportPDFGenerator extends AbstractPdfView {
 
 
             vendorCell = new Cell().add(new Paragraph(vendor.get().getProvince())
-                            .setFont(font)
-                            .setFontSize(12)
-                            .setBorder(Border.NO_BORDER)
-                            .setBold()
+                    .setFont(font)
+                    .setFontSize(12)
+                    .setBorder(Border.NO_BORDER)
+                    .setBold()
                     .setTextAlignment(TextAlignment.CENTER)
                     .setBackgroundColor(ColorConstants.LIGHT_GRAY));
 
@@ -165,10 +165,10 @@ public abstract class ReportPDFGenerator extends AbstractPdfView {
 
 
             vendorCell = new Cell().add(new Paragraph(vendor.get().getEmail())
-                            .setFont(font)
-                            .setFontSize(12)
-                            .setBorder(Border.NO_BORDER)
-                            .setBold()
+                    .setFont(font)
+                    .setFontSize(12)
+                    .setBorder(Border.NO_BORDER)
+                    .setBold()
                     .setTextAlignment(TextAlignment.CENTER)
                     .setBackgroundColor(ColorConstants.LIGHT_GRAY));
 
@@ -260,12 +260,20 @@ public abstract class ReportPDFGenerator extends AbstractPdfView {
                             .setTextAlignment(TextAlignment.CENTER));
                     table.addCell(cell);
 
-                    //ext price
-                    cell = new Cell().add(new Paragraph("$"+line.getPrice().toString())
-                            .setFont(font)
-                            .setFontSize(12)
-                            .setTextAlignment(TextAlignment.CENTER));
-                    table.addCell(cell);
+//                     BigDecimal taxValue = tot.multiply(new BigDecimal(0.13)).add(tot);
+
+// //                    BigDecimal totalValue = line.getPrice().multiply(BigDecimal.valueOf(line.getQty()));
+//                     BigDecimal totalValue = line.getPrice();
+//                     tot = tot.add(totalValue);
+//                     totalValue = totalValue.setScale(2,BigDecimal.ROUND_UP);
+
+
+//                     //ext price
+//                     cell = new Cell().add(new Paragraph("$"+(totalValue.toString()))
+//                             .setFont(font)
+//                             .setFontSize(12)
+//                             .setTextAlignment(TextAlignment.CENTER));
+//                     table.addCell(cell);
 
                 }
 
@@ -322,7 +330,9 @@ public abstract class ReportPDFGenerator extends AbstractPdfView {
                     .setTextAlignment(TextAlignment.RIGHT));
             table.addCell(cell);
 
-            cell = new Cell().add(new Paragraph(formatter.format( tot.multiply(new BigDecimal(0.13)).add(tot))   ))
+            BigDecimal taxValue = tot.multiply(new BigDecimal(0.13)).add(tot);
+
+            cell = new Cell().add(new Paragraph(formatter.format(taxValue)))
                     .setFont(font)
                     .setFontSize(12)
                     .setBold()
